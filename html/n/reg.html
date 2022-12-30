@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<link rel="stylesheet" href="/style.css">
+<title>NFC Tag Registration</title>
+</head>
+<body>
+
+<h1>NFC Tag Registration</h1>
+
+<form action="action.php" method="post">
+<p><b>Object Name</b>: <input type="text" name="name" /> (e.g., 'Sony Alpha-7R')</p>
+
+<p></p><b>Type</b>:
+ <input type="radio" name="type" value="object">Object
+ <input type="radio" name="type" value="box">Box
+ <input type="radio" name="type" value="place">Place (Table / Shelf)
+ <input type="radio" name="type" value="room">Room
+ </p>
+
+ 
+</p>
+
+ <input type="submit" value="Register"/>
+</form>
+    
+</body>
+</html>
