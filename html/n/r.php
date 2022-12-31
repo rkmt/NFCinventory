@@ -99,6 +99,8 @@ $response = $sheet->spreadsheets_values->append(
     $body, //データ
     ["valueInputOption" => 'USER_ENTERED']
 );
+
+
 $response = $sheet->spreadsheets_values->append(
     $log_sheet_id, // 作成したスプレッドシートのIDを入力
     $sheet2_name, //シート名
@@ -109,7 +111,7 @@ $response = $sheet->spreadsheets_values->append(
 
 $response = $sheet->spreadsheets_values->get(
     $log_sheet_id,
-    'Sheet1!A:A'
+    $sheet1_name.'!A:A'
 );
 $values = $response->getValues();
 

@@ -22,38 +22,33 @@ $sheet = setupGoogleSheet($keyFile);
 
 
 
-function init_sheet($sheet, $sheet_id, $column) {
+function init_sheet($sheet, $sheet_id, $sheet_name, $column) {
     $len = count($column);
-
-    //echo("<p>VAL:".$len);
-
-    $values = get_cell($sheet, $sheet_id, $sheet1_name."!A1:A1");
-
-    //echo("<p>A1A1 = ".$values[0][0]);
+    $values = get_cell($sheet, $sheet_id, $sheet_name."!A1:A1");
 
     if (strcmp($values[0][0], "ID") == 0) { // already initialized
         echo("<p>sheet_id: ".$sheet_id." is already initialized.");
         return;
     }
 
-    $range = $sheet1.'!A1:'.chr(ord('A')+$len-1).'1';
+    $range = $sheet_name.'!A1:'.chr(ord('A')+$len-1).'1';
     echo("<p>UPDATE: ".$range);
     
     set_cell($sheet, $sheet_id, $range, [$column]);
 
     echo("<P>CELL added");
-    
+
+    /*
     try {
-        // リクエストデータ
         $request_data = [
             'repeatCell' => [
                 'fields' => 'userEnteredFormat(backgroundColor)',
                 'range' => [
-                    'sheetId' => $shee1_name,
+                    'sheetId' => $sheet_name,
                     'startRowIndex' => 0,       // 行の開始位置
                     'endRowIndex' => 1,        // 行の終了位置
                     'startColumnIndex' => 0,    // 列の開始位置
-                    'endColumnIndex' => $len,      // 列の終了位置
+                    'endColumnIndex' => 1, //$len,      // 列の終了位置
                 ],
                 'cell' => [
                     'userEnteredFormat' => [
@@ -75,11 +70,39 @@ function init_sheet($sheet, $sheet_id, $column) {
     } catch (\Exception $e) {
         echo("<p>Can't initialize:<br>".$e);
     }
+    */
 }
 
 
-init_sheet($sheet, $obj_sheet_id, ['ID', 'Date', 'Time', 'Name', 'Type', 'Hash', 'Location', 'Update Date', 'Update Time']);
-init_sheet($sheet, $log_sheet_id, ['ID', 'Date', 'Time', 'Name', 'Timestamp', 'Place', 'Hash']);
+//$obj_sheet_id = '124IafXXLgC3TEo58HNyWRxBio9X5bV829Az0oIPPIiw';
+init_sheet($sheet, $obj_sheet_id, $sheet1_name, ['ID', 'Date', 'Time', 'Name', 'Type', 'Hash', 'Location', 'Update Date', 'Update Time']);
+init_sheet($sheet, $log_sheet_id, $sheet1_name, ['ID', 'Date', 'Time', 'Name', 'Timestamp', 'Place', 'Hash']);
+
+function add_sheet($sheet, $sheet_id, $sheet_name) {
+    // add a scond sheet (Sheet2) to $log_sheet_id
+    try {
+        $body = new \Google_Service_Sheets_BatchUpdateSpreadsheetRequest([
+            'requests' => [
+                'addSheet' => [
+                    'properties' => [
+                        'title' => $sheet_name
+                    ]
+                ]
+            ]
+        ]);
+        $response = $sheet->spreadsheets->batchUpdate($sheet_id, $body);
+        $new_sheet_id = $response->getReplies()[0]
+            ->getAddSheet()
+            ->getProperties()
+            ->sheetId;
+        echo('<p>Added: '.$sheet_name.' to '.$sheet_id);
+    } catch (\Exception $e) {
+        echo("<p>Can't add a sheet: ".$e);
+    }
+}
+
+add_sheet($sheet, $log_sheet_id, $sheet2_name);
+init_sheet($sheet, $log_sheet_id, $sheet2_name, ['ID', 'Date', 'Time', 'Name', 'Timestamp', 'Place', 'Hash']);
 
 echo("<p>Init Sheets done.")
 
