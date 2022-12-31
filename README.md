@@ -5,19 +5,17 @@ NFC タグをつかった、物品の位置管理システムです。
 
 ## 特徴
 
-* 物品や場所の登録にはスマートフォンアプリ NFC Toolsなど、URLをNFCタグに書き込むアプリを使う。登録以外には特別なアプリは不要。
-
+* 物品や場所の登録にはスマートフォンアプリ `NFC Tools`など、URLをNFCタグに書き込むアプリを使う。登録以外には特別なアプリは不要。
 * いったん登録してしまえば、場所のタグ、物品のタグ、の順にスマートフォンでタッチするだけで、物品の位置が自動更新される。
-
-* 物品の位置はGoogle Spread Sheetからも閲覧可能
+* 物品の位置はGoogle Spread Sheetから閲覧可能
 
 
 ## 利用環境：
 
-* NFC対応のスマートフォン(iPhone等)
+* NFC対応のスマートフォン(iPhone・Android等)
 * NFCタグ（書き込み可能なもの）
 * PHPが稼働するwebサーバー
-* NFCタグ書き込み用のスマートフォンアプリ(NFC Tools 等)
+* NFCタグ書き込み用のスマートフォンアプリ(`NFC Tools` 等)
 
 # 使い方
 
@@ -37,8 +35,8 @@ NFCタグ（シール型、キーチェイン型など）を用意する。
 
 オブジェクト名 (Object Name) を入力し、物品の種類（Object, Box, Place) を指定しする。
 
-* Object は位置を管理した物品
-* Box はobjectを格納できる箱等（場所は移動可能）
+* Object は位置を管理したい物品
+* Box はobjectを格納できる箱など（Boxの場所は移動可能とする）
 * Place は棚など、位置が移動できない場所
 
 「Registration」ボタンを押す。URLが表示されるので、「Copy URL」 ボタンを押して、生成されたURLをクリップボードにコピーする。
@@ -94,8 +92,8 @@ $ composer require google/apiclient:"^2.0"
 * https://bashalog.c-brains.jp/19/04/12-101500.php
 * https://github.com/googleapis/google-api-php-client
 * https://qiita.com/yukachin0414/items/bb2f54f59564919be6c7
-
  
+
 ## 3. Google spreadsheet用の認証ファイルを　`credential.json` として `html/n` と同じ場所に置く。 
 
 認証ファイルの生成方法は以下を参照：
@@ -103,6 +101,13 @@ $ composer require google/apiclient:"^2.0"
 * https://bashalog.c-brains.jp/19/04/12-101500.php
 * https://blog.capilano-fw.com/?p=1816
 
+以上が終了すると、`html/n`には以下のようにファイルが生成されているはず：
+```
+action.php		credentials.json	settings.php
+common.php		init.php		vendor
+composer.json		r.php
+composer.lock		reg.html
+```
 
 ## 4. Google Spread Sheet を作成する。
 
