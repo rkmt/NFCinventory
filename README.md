@@ -86,6 +86,7 @@ URLが設定できたら、「書き込み」ボタンを押すと、NFCタグ�
 
 ## 2. <strong>composer</strong> でGoogle PHP API clientを導入 (html/n のディレクトリで以下を実行）：
 ```
+$ cd html/n
 $ composer require google/apiclient:"^2.0"
 ```
 

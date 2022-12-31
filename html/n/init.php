@@ -24,7 +24,7 @@ function init_sheet($sheet, $sheet_id, $sheet_name, $column) {
     $len = count($column);
     $values = get_cell($sheet, $sheet_id, $sheet_name."!A1:A1");
 
-    if (strcmp($values[0][0], "ID") == 0) { // already initialized
+    if ($values[0][0] != NULL and strcmp($values[0][0], "ID") == 0) { // already initialized
         echo("<p>sheet_id: ".$sheet_id." is already initialized.");
         return;
     }
