@@ -31,7 +31,7 @@ NFCタグ（シール型、キーチェイン型など）を用意する。
 
 ## 2. NFCタグへの情報登録
 
-スマートフォンで　**「登録用サイト」** (`https://aaa.ne.jp/n/reg.html` 等。実際は使用しているwebサーバーのURL)をオープンすると、次のような画面になる。
+スマートフォンで　**「登録用サイト」** (`https://<base_url>/n/reg.html` 等。実際は使用しているwebサーバーのURL)をオープンすると、次のような画面になる。
 
 <img src='docs/IMG_0449.PNG' width='300'>
 
@@ -119,11 +119,11 @@ $ composer require google/apiclient:"^2.0"
 $obj_sheet_id = "<Object Listのgoogle spreadsheet ID>"; // object spreadsheet ID
 $log_sheet_id = "<ID Log のgoogle spreadsheet ID>"; // touch ID log spreadsheet ID
 
-$base_url = 'https://<baseurl>.ne.jp/n';
+$base_url = 'https://<base_url>/n';
 ```
 ## 6. init.php を実行してスプレッドシートを初期設定
 
-`https://aaa.ne.jp/init.php` を実行すると、それぞれのスプレッドシートにヘッダが設定される（エラーになる場合は `settings.php`, `crediential.json` の内容を確認）。
+`https://<base_url>/init.php` を実行すると、それぞれのスプレッドシートにヘッダが設定される（エラーになる場合は `settings.php`, `crediential.json` の内容を確認）。
 
 
 
