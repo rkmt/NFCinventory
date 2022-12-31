@@ -20,15 +20,20 @@ NFC タグをつかった、物品の位置管理システムです。
 * NFCタグ書き込み用のスマートフォンアプリ(NFC Tools 等)
 
 # 使い方
-## 物品、箱、場所の登録
+
+「インストール」を参照してサーバー環境が設定されているものとする。
+
+## 1. 利用するタグ
 
 NFCタグ（シール型、キーチェイン型など）を用意する。
 
-![NFC Tag](docs/IMG_0465.PNG)
+<img src="docs/IMG_0465.PNG" width="300">
 
-スマートフォンで　<strong>「登録用サイト」</strong> をオープンすると、次のような画面になる。
+## 2. NFCタグへの情報登録
 
-![登録画面](docs/IMG_0449.PNG)
+スマートフォンで　**「登録用サイト」** (`https://aaa.ne.jp/n/reg.html` 等。実際は使用しているwebサーバーのURL)をオープンすると、次のような画面になる。
+
+<img src='docs/IMG_0449.PNG' width='300'>
 
 オブジェクト名 (Object Name) を入力し、物品の種類（Object, Box, Place) を指定しする。
 
@@ -36,36 +41,109 @@ NFCタグ（シール型、キーチェイン型など）を用意する。
 * Box はobjectを格納できる箱等（場所は移動可能）
 * Place は棚など、位置が移動できない場所
 
-Registration を押す。URLが表示されるので、Copy URL ボタンを押して、生成されたURLをクリップボードにコピーする。
+「Registration」ボタンを押す。URLが表示されるので、「Copy URL」 ボタンを押して、生成されたURLをクリップボードにコピーする。
 
-![URL copy](docs/IMG_0451.PNG)
+<img src='docs/IMG_0451.PNG' width='300'>
 
-次に、アプリのNFC Toolsを立ち上げる。書き込み＞レコードを追加＞URL/URI を選択し、先程コピーしたURLを設定する（すでに何かが書き込まれたNFCタグの場合は、最初にメモリを消去しておく）：
+次に、アプリの<strong>NFC Tools</strong>を立ち上げる。
 
-![URL copy](docs/IMG_0452.PNG)
+<img src='docs/NFCtools.PNG' width=100>
+
+NFC Tools (iOS, Android):
+* https://apps.apple.com/us/app/nfc-tools/id1252962749
+* https://play.google.com/store/apps/details?id=com.wakdev.wdnfc&hl=en&gl=US
+
+
+
+書く＞レコードを追加＞URL/URI を選択し、先程コピーしたURLを設定する（すでに何かが書き込まれたNFCタグの場合は、最初にメモリを消去しておく）：
+
+<img src='docs/IMG_0452.PNG' width='300'>
 
 URLが設定できたら、「書き込み」ボタンを押すと、NFCタグ書き込みモードになるので、NFCタグの上にスマートフォンを載せてURLを書き込む（iPhoneの場合、スマートフォンの上辺のすぐ下あたりにタグを置くとよい）。
 
-![URL copy](docs/IMG_0454.PNG)
+<img src='docs/IMG_0454.PNG' width='300'>
 
 タグへの書き込みが成功したら、物品にタグを貼り付ける（キーチェーンの場合は物品にとりつける）。場所(place)のタグの場合は、その場所にタグを貼り付ける。
 
 以上で登録は終了。このようにして、物品(object), 箱(box), 場所(place)にタグを登録していく。
 
-## 位置の登録
+## 3. 位置の登録
 
 物品の場所を登録する場合は、まず場所(place)のタグをタッチし、出てくるURLを開く。続いて、物品(object)のタグをタッチし、出てくるURLをを開くと、その物品と場所が関係づけられる。
 
+
 物品の位置は、Object List google spreadsheet でも確認できる：
 
-![Object List](docs/ObjectList.PNG)
+<img src='docs/ObjectList.PNG' width=300>
+
+---
 
 # インストール
 
-PHPが動作可能なWebサーバーに、htmlサブディレクトリ以下をコピーする。
+## 1. PHPが動作可能なWebサーバーに、htmlサブディレクトリ以下をコピーする。
 
-html/r/reg.html が、 `http://aaa.bbb.ne.jp/n/reg.html` でアクセスできるとする。これが<strong>「登録用サイト」</strong> になる。
+`html/n/reg.html` が、 `https://<base_url>/n/reg.html` でアクセスできるとする。これが<strong>「登録用サイト」</strong> になる。
 
-Google spreadsheet用の認証ファイルを　`credential.json` として `html/r` と同じ場所に置く。
+## 2. <strong>composer</strong> でGoogle PHP API clientを導入 (html/n のディレクトリで以下を実行）：
+```
+$ composer require google/apiclient:"^2.0"
+```
+
+参照:
+* https://bashalog.c-brains.jp/19/04/12-101500.php
+* https://github.com/googleapis/google-api-php-client
+* https://qiita.com/yukachin0414/items/bb2f54f59564919be6c7
+
+ 
+## 3. Google spreadsheet用の認証ファイルを　`credential.json` として `html/n` と同じ場所に置く。 
+
+認証ファイルの生成方法は以下を参照：
+
+* https://bashalog.c-brains.jp/19/04/12-101500.php
+* https://blog.capilano-fw.com/?p=1816
+
+
+## 4. Google Spread Sheet を２枚作成し、それぞれ `Object List`, `ID Log` と名前をつける。
+
+それぞれ、`credential.json`の中の`client_emai` のemailからアクセス（編集）できるように共有設定する。
+
+## 5. Spered Sheet IDをsetting.php に設定
+
+`https://docs.google.com/spreadsheets/d/xxxxxxxxxx/edit#gid=0`
+
+の`xxxxxxxxxx`の部分がID。
+
+これを、html/n/settings.php の `$obj_sheet_id`, `$log_sheet_id` の定義の部分に転記する。また、`$base_url`も、実際のWebサーバーのアドレスに変更する：
+
+```php
+$obj_sheet_id = "<Object Listのgoogle spreadsheet ID>"; // object spreadsheet ID
+$log_sheet_id = "<ID Log のgoogle spreadsheet ID>"; // touch ID log spreadsheet ID
+
+$base_url = 'https://<baseurl>.ne.jp/n';
+```
+## 6. init.php を実行してスプレッドシートを初期設定
+
+`https://aaa.ne.jp/init.php` を実行すると、それぞれのスプレッドシートにヘッダが設定される（エラーになる場合は `settings.php`, `crediential.json` の内容を確認）。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
