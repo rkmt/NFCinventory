@@ -3,9 +3,12 @@ Tool to manage the location of things with NFC and smartphone
 
 NFC タグをつかった、物品の位置管理システムです。スマートフォンでNFCタグをタッチするだけで、ものを箱に入れたり棚に入れたりしたときの場所がgoogle spreadsheetに自動的に反映します。
 
+<img src='docs/IMG_0478.PNG' width=300>
+<img src='docs/ObjectList.PNG'>
+
 ## 特徴
 
-* 物品や場所の登録にはスマートフォンアプリ `NFC Tools`など、URLをNFCタグに書き込むアプリを使う。登録以外には特別なアプリは不要。
+* 物品や場所に添付するタグの設定にはスマートフォンアプリ `NFC Tools`など、URLをNFCタグに書き込む既存アプリを使う。設定時以外には特別なアプリは不要。
 * いったん登録してしまえば、場所のタグ、物品のタグ、の順にスマートフォンでタッチするだけで、物品の位置が自動更新される。
 * 物品の位置はGoogle Spread Sheetから閲覧可能
 
@@ -69,10 +72,11 @@ URLが設定できたら、「書き込み」ボタンを押すと、NFCタグ�
 
 物品の場所を登録する場合は、まず場所(place)のタグをタッチし、出てくるURLを開く。続いて、物品(object)のタグをタッチし、出てくるURLをを開くと、その物品と場所が関係づけられる。
 
+<img src='docs/IMG_0478.PNG' width=300>
 
 物品の位置は、Object List google spreadsheet でも確認できる：
 
-<img src='docs/ObjectList.PNG' width=300>
+<img src='docs/ObjectList.PNG'>
 
 ---
 
@@ -123,11 +127,11 @@ composer.lock		reg.html
 
 ```php
 $sheet_id = "<Google spreadsheet ID>";
-$base_url = 'https://<base_url>/n';
+$base_url = 'http://<base_url>/n';
 ```
 ## 6. init.php を実行してスプレッドシートを初期設定
 
-`https://<base_url>/init.php` を実行すると、それぞれのスプレッドシートにヘッダが設定される（エラーになる場合は `settings.php`, `crediential.json` の内容を確認）。
+`http://<base_url>/init.php` を実行すると、それぞれのスプレッドシートにヘッダが設定される（エラーになる場合は `settings.php`, `crediential.json` の内容を確認）。
 
 ## Local Server
 
