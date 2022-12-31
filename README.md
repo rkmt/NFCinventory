@@ -1,7 +1,7 @@
 # NFCinventory
 Tool to manage the location of things with NFC and smartphone
 
-NFC タグをつかった、物品の位置管理システムです。
+NFC タグをつかった、物品の位置管理システムです。スマートフォンでNFCタグをタッチするだけで、ものを箱に入れたり棚に入れたりしたときの場所がgoogle spreadsheetに自動的に反映します。
 
 ## 特徴
 
