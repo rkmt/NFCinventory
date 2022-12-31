@@ -17,7 +17,7 @@ include("./common.php");
 
 
 
-$id=dechex(time()-1672099294);
+$id="#".strtoupper(dechex(time()-1672099294));
 $name=$_POST['name'];
 $objtype=$_POST['type'];
 switch ($objtype) {
@@ -42,13 +42,6 @@ $url = $base_url."/r.php?i=".$id."&t=".$obj."&n=".urlencode($name);
 
 echo($url."</p>");
 
-/*
-//include('/phpqrcode/qrlib.php');
-require __DIR__. '/phpqrcode/prlib.php';
-// outputs image directly into browser, as PNG stream
-QRcode::png($url);
-*/
-
 // setup Google Spreadsheet handler
 require __DIR__. '/vendor/autoload.php';
 $keyFile = __DIR__. "/credentials.json";
@@ -67,7 +60,7 @@ $body = new Google_Service_Sheets_ValueRange([
 ]);
 $response = $sheet->spreadsheets_values->append(
     $obj_sheet_id,
-    'Sheet1', // range
+    $sheet1_name, //'Sheet1', // range
     $body, // data
     ["valueInputOption" => 'USER_ENTERED']
 );

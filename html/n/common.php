@@ -23,5 +23,28 @@ function setupGoogleSheet($keyFile) {
     return ($sheet);
 }
 
+// $range: "A2:B2"  $values  [["a", "b"]]
+function set_cell($sheet, $sheet_id, $range, $values) {
+    $body = new Google_Service_Sheets_ValueRange([
+        'values' => $values
+    ]);
+    $response = $sheet->spreadsheets_values->update(
+        $sheet_id, // 作成したスプレッドシートのIDを入力
+        $range, //range
+        $body, //データ
+        ["valueInputOption" => 'USER_ENTERED']
+    );    
+    return $response;
+}
+
+function get_cell($sheet, $obj_sheet_id, $range) {
+    $response = $sheet->spreadsheets_values->get(
+        $obj_sheet_id,
+        $range
+    );
+    $values = $response->getValues();
+    return $values;
+}
+
 ?>
 

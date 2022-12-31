@@ -20,7 +20,7 @@ $sheet = setupGoogleSheet($keyFile);
 function find_place($sheet, $sheet_id, $ts, $hash, $time_diff) {
     $response = $sheet->spreadsheets_values->get(
         $sheet_id,
-        'Sheet1!A:G'
+        $sheet1_name.'!A:G'
     );
     $values = $response->getValues();
     
@@ -37,19 +37,7 @@ function find_place($sheet, $sheet_id, $ts, $hash, $time_diff) {
     return NULL;
 }
 
-// $range: "A2:B2"  $values  [["a", "b"]]
-function cet_cell($sheet, $sheet_id, $range, $values) {
-    $body = new Google_Service_Sheets_ValueRange([
-        'values' => $values
-    ]);
-    $response = $sheet->spreadsheets_values->update(
-        $sheet_id, // 作成したスプレッドシートのIDを入力
-        'Sheet1!'.$range, //range
-        $body, //データ
-        ["valueInputOption" => 'USER_ENTERED']
-    );    
-    return $response;
-}
+
 
 $id = $_GET['i']; // object id
 $name = $_GET['n']; // object name
@@ -85,11 +73,7 @@ if (strcmp($objtype, "object") == 0 or strcmp($objtype, "box") == 0) {
     $placename = find_place($sheet, $log_sheet_id, $ts, $hash, 60*10); // latest location
     echo("<p><h3>Place/Box:".$placename."<h3>");
     if (isset($placename)) { // update Object Spreadsheet
-        $response = $sheet->spreadsheets_values->get(
-            $obj_sheet_id,
-            'Sheet1!A:A'
-        );
-        $values = $response->getValues();
+        $values = get_cell($sheet, $obj_sheet_id, $sheet1_name.'!A:A');
         $cell_idx = 0;
         foreach ($values as $val) {
             //echo(var_dump($val));
@@ -100,7 +84,7 @@ if (strcmp($objtype, "object") == 0 or strcmp($objtype, "box") == 0) {
         }
         //echo ("<p>CELL:".$cell_idx." / id".$id." ".($cell_idx+2));
         if ($cell_idx > 0) {
-            cet_cell($sheet, $obj_sheet_id, 'G'.$cell_idx.':I'.$cell_idx, [[$placename, $day, $hour]]);//場所を更新
+            set_cell($sheet, $obj_sheet_id, $sheet1_name.'!G'.$cell_idx.':I'.$cell_idx, [[$placename, $day, $hour]]);//場所を更新
         }
     }
 }
@@ -111,13 +95,13 @@ $body = new Google_Service_Sheets_ValueRange([
 ]);
 $response = $sheet->spreadsheets_values->append(
     $log_sheet_id, // 作成したスプレッドシートのIDを入力
-    'Sheet1', //シート名
+    $shee1_name, //シート名
     $body, //データ
     ["valueInputOption" => 'USER_ENTERED']
 );
 $response = $sheet->spreadsheets_values->append(
     $log_sheet_id, // 作成したスプレッドシートのIDを入力
-    'Sheet2', //シート名
+    $sheet2_name, //シート名
     $body, //データ
     ["valueInputOption" => 'USER_ENTERED']
 );
