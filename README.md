@@ -116,7 +116,7 @@ $ composer require google/apiclient:"^2.0"
 これを、html/n/settings.php の `$sheet_id` の定義の部分に転記する。また、`$base_url`も、実際のWebサーバーのアドレスに変更する：
 
 ```php
-$sheet_id = "<Google spreadsheet ID>"; // Google spreadsheet ID
+$sheet_id = "<Google spreadsheet ID>";
 $base_url = 'https://<base_url>/n';
 ```
 ## 6. init.php を実行してスプレッドシートを初期設定

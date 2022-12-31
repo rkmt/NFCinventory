@@ -1,7 +1,7 @@
 <?php
 
-$sheet_id = '124IafXXLgC3TEo58HNyWRxBio9X5bV829Az0oIPPIiw';
-$base_url = 'http://www12384ue.sakura.ne.jp/n';
+$sheet_id = '<google spreadsheet ID>';
+$base_url = 'http://<base_url>/n';
 
 // google spreadsheet のsheet名
 $obj_sheet_name = 'Sheet1';
