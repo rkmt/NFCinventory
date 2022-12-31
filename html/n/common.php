@@ -13,6 +13,17 @@ function getHostHash() {
     //return ($host);
 }
 
+function sheetname2id($sheet, $sheet_id, $name) {
+    $response = $sheet->spreadsheets->get($sheet_id);
+    foreach($response->getSheets() as $sh) {
+        if (strcmp($sh['properties']['title'], $name) == 0) {
+            $sid = $sh['properties']['sheetId'];
+            return $sid;
+        }
+    }
+    return -1;
+}
+
 function setupGoogleSheet($keyFile) {
     $client = new Google_Client();
     $client->setAuthConfig($keyFile);

@@ -16,28 +16,6 @@ require __DIR__. '/vendor/autoload.php';
 $keyFile = __DIR__. "/credentials.json";
 $sheet = setupGoogleSheet($keyFile);
 
-// find the latest location
-function find_place($sheet, $sheet_id, $ts, $hash, $time_diff) {
-    $response = $sheet->spreadsheets_values->get(
-        $sheet_id,
-        $sheet1_name.'!A:G'
-    );
-    $values = $response->getValues();
-    
-    foreach (array_reverse($values) as $val) {
-        //echo(var_dump($val));
-        if ($ts - $val[4] < $time_diff and (strcmp($val[5], "place") == 0 or strcmp($val[5], "box")==0)) {
-            //echo(var_dump($val)."<br>");
-            if (strcmp($hash, $val[6]) == 0) {
-                $placename = $val[3];
-                return ($placename);
-            }
-        }
-    }
-    return NULL;
-}
-
-
 
 $id = $_GET['i']; // object id
 $name = $_GET['n']; // object name
@@ -68,12 +46,39 @@ $hour = $objDateTime->format('H:i:s'); //13:33:59
 
 $hash = getHostHash();
 $placename = NULL;
+
+//echo("<h1>ID:".$name." ".$log_sheet_name."</h1>");
+
+// find the latest location
+function find_place($sheet, $sheet_id, $log_sheet_name, $ts, $hash, $time_diff) {
+    //echo("<p>FindPlace:". $log_sheet_name);
+    $response = $sheet->spreadsheets_values->get(
+        $sheet_id,
+        $log_sheet_name.'!A:G'
+    );
+    $values = $response->getValues();
+    
+    foreach (array_reverse($values) as $val) {
+        //echo("<p>#".($val[4]));
+        if ($ts - $val[4] < $time_diff and (strcmp($val[5], "place") == 0 or strcmp($val[5], "box")==0)) {
+            //echo("<p>* ".$hash." ".$val[6]." ".var_dump($val)."<br>");
+            if (strcmp($hash, $val[6]) == 0) {
+                $placename = $val[3];
+                return ($placename);
+            }
+        }
+    }
+    return NULL;
+}
+
+//echo("<p>find locaiton:".$sheet_id);
+
 // find object location
 if (strcmp($objtype, "object") == 0 or strcmp($objtype, "box") == 0) {
-    $placename = find_place($sheet, $log_sheet_id, $ts, $hash, 60*10); // latest location
+    $placename = find_place($sheet, $sheet_id, $log_sheet_name, $ts, $hash, 60*10); // latest location
     echo("<p><h3>Place/Box:".$placename."<h3>");
     if (isset($placename)) { // update Object Spreadsheet
-        $values = get_cell($sheet, $obj_sheet_id, $sheet1_name.'!A:A');
+        $values = get_cell($sheet, $sheet_id, $obj_sheet_name.'!A:A');
         $cell_idx = 0;
         foreach ($values as $val) {
             //echo(var_dump($val));
@@ -84,7 +89,7 @@ if (strcmp($objtype, "object") == 0 or strcmp($objtype, "box") == 0) {
         }
         //echo ("<p>CELL:".$cell_idx." / id".$id." ".($cell_idx+2));
         if ($cell_idx > 0) {
-            set_cell($sheet, $obj_sheet_id, $sheet1_name.'!G'.$cell_idx.':I'.$cell_idx, [[$placename, $day, $hour]]);//場所を更新
+            set_cell($sheet, $sheet_id, $obj_sheet_name.'!G'.$cell_idx.':I'.$cell_idx, [[$placename, $day, $hour]]);//場所を更新
         }
     }
 }
@@ -94,34 +99,32 @@ $body = new Google_Service_Sheets_ValueRange([
     'values' => [[$id, $day, $hour, $name, $ts, $objtype, $hash]]
 ]);
 $response = $sheet->spreadsheets_values->append(
-    $log_sheet_id, // 作成したスプレッドシートのIDを入力
-    $shee1_name, //シート名
+    $sheet_id, // 作成したスプレッドシートのIDを入力
+    $log_sheet_name, //シート名
     $body, //データ
     ["valueInputOption" => 'USER_ENTERED']
 );
-
-
 $response = $sheet->spreadsheets_values->append(
-    $log_sheet_id, // 作成したスプレッドシートのIDを入力
-    $sheet2_name, //シート名
+    $sheet_id, // 作成したスプレッドシートのIDを入力
+    $log_sheet_name2, //シート名
     $body, //データ
     ["valueInputOption" => 'USER_ENTERED']
 );
 
 
+// $log_sheet_name の行数が長すぎると処理時間がかかるので、行を削る。
 $response = $sheet->spreadsheets_values->get(
-    $log_sheet_id,
-    $sheet1_name.'!A:A'
+    $sheet_id,
+    $log_sheet_name.'!A:A'
 );
 $values = $response->getValues();
-
-// Sheet1 が長すぎると処理時間がかかるので、行を削る。
 if (sizeof($values) > 50) {
+    $sid = sheetname2id($sheet, $sheet_id, $log_sheet_name);
     $batchUpdateRequest = new \Google_Service_Sheets_BatchUpdateSpreadsheetRequest(array(
         'requests' => array(
         'deleteDimension' => array(
             'range' => array(
-                'sheetId' => 0, // the ID of the sheet/tab shown after 'gid=' in the URL
+                'sheetId' => $sid, // the ID of the sheet/tab shown after 'gid=' in the URL
                 'dimension' => "ROWS",
                 'startIndex' => 1, // row number to delete
                 'endIndex' => 10
@@ -129,9 +132,8 @@ if (sizeof($values) > 50) {
         )    
         )
     ));
-    $result = $sheet->spreadsheets->batchUpdate($log_sheet_id, $batchUpdateRequest);
+    $result = $sheet->spreadsheets->batchUpdate($sheet_id, $batchUpdateRequest);
 }
-
 
 //var_export($response->getUpdates());
 
@@ -149,9 +151,6 @@ if (sizeof($values) > 50) {
 </table>
 
 <p>
-    <a href="https://docs.google.com/spreadsheets/d/<?php echo($log_sheet_id);?>/edit#gid=0">NFC Touch Log</a>
+    <a href="https://docs.google.com/spreadsheets/d/<?php echo($sheet_id);?>">Google Sheet</a>
 </p>
 
-<p>
-    <a href="https://docs.google.com/spreadsheets/d/<?php echo($obj_sheet_id);?>/edit#gid=0">Object List</a>
-</p>

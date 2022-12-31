@@ -1,9 +1,11 @@
 <?php
 
-$log_sheet_id = "<GoogleSpreadsheet ID>"; // touch ID log spreadsheet ID
-$obj_sheet_id = "<Google Spreadsheet ID>"; // object spreadsheet ID
-$base_url = 'http://<wabhost>/n';
-$sheet1_name = 'Sheet1';
-$sheet2_name = 'Sheet2';
+$sheet_id = '124IafXXLgC3TEo58HNyWRxBio9X5bV829Az0oIPPIiw';
+$base_url = 'http://www12384ue.sakura.ne.jp/n';
+
+// google spreadsheet のsheet名
+$obj_sheet_name = 'Sheet1';
+$log_sheet_name = 'Log';
+$log_sheet_name2 = 'Log (full)';
 
 ?>

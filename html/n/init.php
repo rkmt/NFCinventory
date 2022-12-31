@@ -20,8 +20,6 @@ require __DIR__. '/vendor/autoload.php';
 $keyFile = __DIR__. "/credentials.json";
 $sheet = setupGoogleSheet($keyFile);
 
-
-
 function init_sheet($sheet, $sheet_id, $sheet_name, $column) {
     $len = count($column);
     $values = get_cell($sheet, $sheet_id, $sheet_name."!A1:A1");
@@ -38,17 +36,18 @@ function init_sheet($sheet, $sheet_id, $sheet_name, $column) {
 
     echo("<P>CELL added");
 
-    /*
+    $sid = sheetname2id($sheet, $sheet_id, $sheet_name);
+
     try {
         $request_data = [
             'repeatCell' => [
                 'fields' => 'userEnteredFormat(backgroundColor)',
                 'range' => [
-                    'sheetId' => $sheet_name,
+                    'sheetId' => $sid,
                     'startRowIndex' => 0,       // 行の開始位置
                     'endRowIndex' => 1,        // 行の終了位置
                     'startColumnIndex' => 0,    // 列の開始位置
-                    'endColumnIndex' => 1, //$len,      // 列の終了位置
+                    'endColumnIndex' => $len,      // 列の終了位置
                 ],
                 'cell' => [
                     'userEnteredFormat' => [
@@ -70,16 +69,9 @@ function init_sheet($sheet, $sheet_id, $sheet_name, $column) {
     } catch (\Exception $e) {
         echo("<p>Can't initialize:<br>".$e);
     }
-    */
 }
 
-
-//$obj_sheet_id = '124IafXXLgC3TEo58HNyWRxBio9X5bV829Az0oIPPIiw';
-init_sheet($sheet, $obj_sheet_id, $sheet1_name, ['ID', 'Date', 'Time', 'Name', 'Type', 'Hash', 'Location', 'Update Date', 'Update Time']);
-init_sheet($sheet, $log_sheet_id, $sheet1_name, ['ID', 'Date', 'Time', 'Name', 'Timestamp', 'Place', 'Hash']);
-
 function add_sheet($sheet, $sheet_id, $sheet_name) {
-    // add a scond sheet (Sheet2) to $log_sheet_id
     try {
         $body = new \Google_Service_Sheets_BatchUpdateSpreadsheetRequest([
             'requests' => [
@@ -95,16 +87,35 @@ function add_sheet($sheet, $sheet_id, $sheet_name) {
             ->getAddSheet()
             ->getProperties()
             ->sheetId;
-        echo('<p>Added: '.$sheet_name.' to '.$sheet_id);
+        echo('<h2>Added Sheet: '.$sheet_name.' to '.$sheet_id.'</h2>');
     } catch (\Exception $e) {
         echo("<p>Can't add a sheet: ".$e);
     }
 }
 
-add_sheet($sheet, $log_sheet_id, $sheet2_name);
-init_sheet($sheet, $log_sheet_id, $sheet2_name, ['ID', 'Date', 'Time', 'Name', 'Timestamp', 'Place', 'Hash']);
+function setup_sheet($sheet, $sheet_id, $sheet_name,  $list) {
+    add_sheet($sheet, $sheet_id, $sheet_name);
+    init_sheet($sheet, $sheet_id, $sheet_name, $list);
+}
 
-echo("<p>Init Sheets done.")
+setup_sheet($sheet, $sheet_id, $obj_sheet_name,  ['ID', 'Date', 'Time', 'Name', 'Type', 'Hash', 'Location', 'Update Date', 'Update Time']);
+setup_sheet($sheet, $sheet_id, $log_sheet_name,  ['ID', 'Date', 'Time', 'Name', 'Timestamp', 'Type', 'Hash']);
+setup_sheet($sheet, $sheet_id, $log_sheet_name2,  ['ID', 'Date', 'Time', 'Name', 'Timestamp', 'Type', 'Hash']);
+
+
+
+// $sheet_id = '124IafXXLgC3TEo58HNyWRxBio9X5bV829Az0oIPPIiw';
+/*
+add_sheet($sheet, $sheet_id, $obj_sheet_name);
+add_sheet($sheet, $sheet_id, $log_sheet_name);
+add_sheet($sheet, $sheet_id, $log_sheet_name2);
+
+init_sheet($sheet, $sheet_id, $obj_sheet_name,
+init_sheet($sheet, $sheet_id, $log_sheet_name, ['ID', 'Date', 'Time', 'Name', 'Timestamp', 'Place', 'Hash']);
+init_sheet($sheet, $sheet_id, $log_sheet_name, ['ID', 'Date', 'Time', 'Name', 'Timestamp', 'Place', 'Hash']);
+*/
+
+echo("<h2>Init Sheets done.</h2>");
 
 ?>
 

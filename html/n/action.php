@@ -17,7 +17,7 @@ include("./common.php");
 
 
 
-$id="#".strtoupper(dechex(time()-1672099294));
+$id="x".strtoupper(dechex(time()-1672099294));
 $name=$_POST['name'];
 $objtype=$_POST['type'];
 switch ($objtype) {
@@ -59,8 +59,8 @@ $body = new Google_Service_Sheets_ValueRange([
     'values' => [[$id, $day, $hour, $name, $objtype, $hash]]
 ]);
 $response = $sheet->spreadsheets_values->append(
-    $obj_sheet_id,
-    $sheet1_name, //'Sheet1', // range
+    $sheet_id,
+    $obj_sheet_name, //range
     $body, // data
     ["valueInputOption" => 'USER_ENTERED']
 );

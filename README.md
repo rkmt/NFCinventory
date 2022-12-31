@@ -103,27 +103,39 @@ $ composer require google/apiclient:"^2.0"
 * https://blog.capilano-fw.com/?p=1816
 
 
-## 4. Google Spread Sheet を２枚作成し、それぞれ `Object List`, `ID Log` と名前をつける。
+## 4. Google Spread Sheet を作成する。
 
-それぞれ、`credential.json`の中の`client_emai` のemailからアクセス（編集）できるように共有設定する。
+`credential.json`の中の`client_emai` のemailからアクセス（編集）できるように共有設定する。
 
 ## 5. Spered Sheet IDをsetting.php に設定
 
 `https://docs.google.com/spreadsheets/d/xxxxxxxxxx/edit#gid=0`
 
-の`xxxxxxxxxx`の部分がID。
+の`xxxxxxxxxx`の部分がSpread Sheet ID。
 
-これを、html/n/settings.php の `$obj_sheet_id`, `$log_sheet_id` の定義の部分に転記する。また、`$base_url`も、実際のWebサーバーのアドレスに変更する：
+これを、html/n/settings.php の `$sheet_id` の定義の部分に転記する。また、`$base_url`も、実際のWebサーバーのアドレスに変更する：
 
 ```php
-$obj_sheet_id = "<Object Listのgoogle spreadsheet ID>"; // object spreadsheet ID
-$log_sheet_id = "<ID Log のgoogle spreadsheet ID>"; // touch ID log spreadsheet ID
-
+$sheet_id = "<Google spreadsheet ID>"; // Google spreadsheet ID
 $base_url = 'https://<base_url>/n';
 ```
 ## 6. init.php を実行してスプレッドシートを初期設定
 
 `https://<base_url>/init.php` を実行すると、それぞれのスプレッドシートにヘッダが設定される（エラーになる場合は `settings.php`, `crediential.json` の内容を確認）。
+
+## Local Server
+
+Webサーバーを立てることが難しい場合には、LAN内にphpによるhttpdサーバーを起動することができる：
+
+```
+$ cd html  
+$ sudo php -S <IP_address>:80
+```
+
+で、　`http://<IP_address>:80/n/reg.html` 等にアクセスできるようになる。
+
+
+
 
 
 
